@@ -1,0 +1,6 @@
+man is the system&apos;s manual pager.
+Each page argument given to man is normally the name of a program, utility or function.
+The manual page associated　with each of these arguments is then found and displayed.
+A section, if provided, will direct man to look only in that section of the manual.
+The default action is to search in all of the available sections following a pre-defined order (&quot;1 1p 8 2 3 3p 4 5 6 7 9 0p n l p o 1x 2x 3x 4x 5x 6x 7x
+8x&quot; by default, unless overridden by the SECTION directive in /etc/man_db.conf), and to show only the first page found, even if page exists in several sections.
