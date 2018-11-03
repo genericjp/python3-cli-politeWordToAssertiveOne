@@ -91,6 +91,9 @@
         ]
 
 History
+    2018/11/03 20:00 (JST,UTC+9h)  v1.0.1 by ShozoNamikawa
+        1) Tone conversion method by verb pattern classification was adopted.
+        ...[動詞パターン分類によるトーン変換方式とした。]
     2018/10/24 22:00 (JST,UTC+9h)  v1.0.0 by ShozoNamikawa
      
 """
