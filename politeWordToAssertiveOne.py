@@ -89,6 +89,9 @@
         ]
 
 History
+    2018/11/10 03:10 (JST,UTC+9h)  v1.0.2 by ShozoNamikawa
+        1)  convert a pattern following a specific letter into an assertion word
+        ... [特定の一字に続くパターンを断定語に変換する]
     2018/11/03 20:00 (JST,UTC+9h)  v1.0.1 by ShozoNamikawa
         1) Tone conversion method by verb pattern classification was adopted.
         ...[動詞パターン分類によるトーン変換方式とした。]
@@ -143,12 +146,20 @@ class CnvTone():
         # dict for converting polite tone into assertive one
         # [丁寧語調を断定語調に変換するdict]
         self.dct_cnv = {
-                # Beware of enumeration of dictionaries
-                # [辞書の列挙順には要注意]
-                
-                # Note. automatically generated inside the script
-                # [注.　スクリプト内部において自動的に生成する]
-                }
+            # Beware of enumeration of dictionaries
+            # [辞書の列挙順には要注意]
+            
+            # Note. automatically generated inside the script
+            # [注.　スクリプト内部において自動的に生成する]
+            }
+        
+        self.dct_cnv2 = {
+            # convert a pattern following a specific letter into an assertion word
+            # [特定の一字に続くパターンを断定語に変換する]
+            
+            # Note. automatically generated inside the script
+            # [注.　スクリプト内部において自動的に生成する]
+            }
         
         # forcibly change such as non-polite words (e.g.　more and more)
         # [丁寧語でない益々（ますます）などを強制的に置き換える]
@@ -159,7 +170,7 @@ class CnvTone():
                 
                 # please
                 'ください'           : '下さい',
-
+                
                 # 述語 + ...
                 # 　→　...のこと
                 
@@ -236,7 +247,7 @@ class CnvTone():
         
         # register the stem list, word variation, and change pattern
         # [語幹リスト、語変、及び変化パターンを登録する]
-        self.dct_wgrp = {
+        self.dct_wgrp1 = {
                 
                 # 熟語 + ...
                 
@@ -264,6 +275,8 @@ class CnvTone():
                 # 単字 + ...
                 
                 'しめす':     {'語幹': ['しめ', '示'], '語変': 'し', '変化': '変化-す,そう,した,さx,さx'},
+                
+                'てみ':       {'語幹': ['てみ', 'でみ'], '語変': '', '変化': '変化-る,よう,た,x,x'}, # e.g. 考えてみる
                 
                 'あう':       {'語幹': ['あ', '会', '合', '逢', '遭'], '語変': 'い', '変化': '変化-う,うだろう,った,わx,わx'},
                 'あたえる':   {'語幹': ['あたえ', '与え'], '語変': '', '変化': '変化-る,よう,た,x,x'},
@@ -303,10 +316,10 @@ class CnvTone():
                 'かぎる':     {'語幹': ['かぎ', '限'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
                 'かこむ':     {'語幹': ['かこ', '囲'], '語変': 'み', '変化': '変化-む,もう,んだ,まなかった,まない'},
                 'かる':       {'語幹': ['か', '刈'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
-                'かわる':     {'語幹': ['かわ', '変わ'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
+                'かえる':     {'語幹': ['かえ', '変え', '換え', '代え', '替え'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
+                'かわる':     {'語幹': ['かわ', '変わ', '換わ', '代わ', '替わ'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
                 'かんがえる': {'語幹': ['かんがえ', '考え'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
                 'かんじる':   {'語幹': ['かんじ', '感じ'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
-                'かわる':     {'語幹': ['かわ', '変わ', '代わ'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
                 'きく':       {'語幹': ['き', '聞'], '語変': 'き', '変化': '変化-く,こう,いた,かx,かx'},
                 'きめる':     {'語幹': ['きめ', '決め'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'くわわる':   {'語幹': ['くわわ', '加わ'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
@@ -318,6 +331,7 @@ class CnvTone():
                 'だす':       {'語幹': ['だ', '出'], '語変': 'し', '変化':  '変化-す,そう,した,さx,さx'},
                 'たすける':   {'語幹': ['たすけ', '助け'], '語変': '', '変化':  '変化-る,るだろう,た,x,x'},
                 'たつ':       {'語幹': ['た', '立'], '語変': 'ち', '変化': '変化-つ,とう,った,たx,たx'},
+                'たのむ':     {'語幹': ['たの', '頼'], '語変': 'み', '変化': '変化-む,もう,んだ,まなかった,まない'},
                 'たべる':     {'語幹': ['たべ', '食べ'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'ついやす':   {'語幹': ['ついや', '費や'], '語変': 'し', '変化': '変化-す,すだろう,した,さx,さx'},
                 'つかう':     {'語幹': ['つか', '使'], '語変': 'い', '変化': '変化-う,うだろう,った,わx,わx'},
@@ -337,7 +351,7 @@ class CnvTone():
                 'とりあげる': {'語幹': ['とりあげ', '取あげ'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'とりこまれる':{'語幹': ['とりこまれ', '取り込まれ'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'とる':       {'語幹': ['と', '取'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
-                'ぬく':       {'語幹': ['ぬ', '抜'], '語変': 'き', '変化': '変化-く,こう,いた,かx,かx'},
+                'のぞむ':     {'語幹': ['のぞ', '望'], '語変': 'み', '変化': '変化-む,もう,んだ,まなかった,まない'},
                 'ねがう':     {'語幹': ['ねが', '願'], '語変': 'い', '変化': '変化-う,うだろう,った,わx,わx'},
                 'はじまる':   {'語幹': ['はじま', '始ま'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
                 'はじめる':   {'語幹': ['はじめ', '始め'], '語変': '', '変化': '変化-る,よう,た,x,x'},
@@ -350,9 +364,10 @@ class CnvTone():
                 'ひらく':     {'語幹': ['ひら', '開'], '語変': 'き', '変化': '変化-く,こう,いた,かx,かx'},
                 'まつ':       {'語幹': ['ま', '待'], '語変': 'ち', '変化': '変化-つ,とう,った,たx,たx'},
                 'まなぶ':     {'語幹': ['まな', '学'], '語変': 'び', '変化': '変化-ぶ,ぼう,んだ,ばx,ばx'},
-                'みる':       {'語幹': ['み', '見'], '語変': '', '変化': '変化-る,よう,た,x,x'},
+                'みる':       {'語幹': ['見'], '語変': '', '変化': '変化-る,よう,た,x,x'},      # del 'み', 
                 'みえる':     {'語幹': ['みえ', '見え'], '語変': '', '変化': '変化-る,よう,た,x,x'},
-                'みつかる':   {'語幹': ['みつか', '見つか'], '語変': 'り', '変化': '変化-る,るだろう,った,らx,らx'},
+                'ひらく':     {'語幹': ['ひら', '開'], '語変': 'き', '変化': '変化-く,こう,いた,かx,かx'},
+                'みちびく':   {'語幹': ['みちび', '導'], '語変': 'き', '変化': '変化-く,こう,いた,かx,かx'},
                 'みつける':   {'語幹': ['みつけ', '見つけ'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'みてみる':   {'語幹': ['みてみ', '見てみ'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'むかう':     {'語幹': ['むか', '向か'], '語変': 'い', '変化': '変化-う,うだろう,った,わx,わx'},
@@ -379,7 +394,7 @@ class CnvTone():
                 'してくる':   {'語幹': ['して'], '語変': 'き', '変化': '変化-くる,こよう,きた,こx,こx'},
                 'している':   {'語幹': ['してい'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
                 
-
+                
                 'かれる':     {'語幹': ['かれ'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
                 'ばれる':     {'語幹': ['ばれ'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
                 'られる':     {'語幹': ['られ'], '語変': '', '変化': '変化-る,るだろう,た,x,x'},
@@ -389,17 +404,17 @@ class CnvTone():
                 'くる':       {'語幹': ['き'], '語変': '', '変化': '変化-くる,こよう,きた,こなかった,こない', '変語幹':'有'},
                 'いる':       {'語幹': ['い', '居'], '語変': '', '変化': '変化-る,よう,た,x,x'},
                 'する':       {'語幹': [''], '語変': 'し', '変化': '変化-する,しよう,した,しなかった,しない', '変語幹':'有'},
-
+                
                 }
                 
         # register the leaked polite tone that should be interpreted at the very end
         # [一番最後になって解釈すべき漏れた敬語表現を登録する]
         self.dct_tail = {
-
+                
                 # して
                 'して下さい'         : 'すること',
                 'させます'           : 'させる',
-
+                
                 # です
                 'ですか'             : 'であろうか',
                 'ですべて'           : 'で全て',  # です　のやりすぎを回避
@@ -407,6 +422,15 @@ class CnvTone():
                 'でしょうか'         : 'であろうか',
                 'でしょう'           : 'であろう',
                 
+                # 
+                }
+        
+        # register the stem list, word variation, and change pattern
+        # [語幹リスト、語変、及び変化パターンを登録する]
+        self.dct_wgrp2 = {
+                'みる':       {'語幹': [''], '語変': 'み', '変化': '変化-る,よう,た,x,x',
+                     '漢字' : {'語幹': [''], '語変': 'み', '変化': '変化-む,もう,んだ,まなかった,まない'}
+                             },
                 }
                 
         # correspond to polite endings, register the assertive endings
@@ -448,7 +472,7 @@ class CnvTone():
                         {'ます': 'る',  'ましょう': 'るだろう', 'ました': 'た',  'ませんでした': 'なかった',  'ません': 'ない'},
                 '変化-る,るだろう,った,らx,らx': 
                         {'ます': 'る',  'ましょう': 'るだろう', 'ました': 'った', 'ませんでした': 'らなかった', 'ません': 'らない'},
-
+                
                 #
                 '変化-つ,とう,った,たx,たx': 
                         {'ます': 'つ',  'ましょう': 'とう', 'ました': 'った',  'ませんでした': 'たなかった', 'ません': 'たない'},
@@ -480,13 +504,12 @@ class CnvTone():
         
         # read clipping content of machine translation result at startup
         self.clip_str = self.clip_board.get()
-        
-    def cnvTone(self):
+    
+    def cnvForced(self):
         """
-            convert polite tone to assertive one
-            [丁寧語（「です・ます」調）を断定語（「だ・である」調）に変換]
+            forcibly convert tones with a certain vocabulary pattern
+            [一定の語彙パターンでトーンを強制的に変換する]
         """
-        
         # forcibly change such as non-polite words (e.g.　more and more)
         # [丁寧語でない益々（ますます）等を強制的に置き換える]
         for k_fchg in self.dct_fchg:
@@ -497,13 +520,13 @@ class CnvTone():
         
         # extract approximate stems in order
         # [近似語幹を順に取り出す]
-        for k_wgrp in self.dct_wgrp:
-            w_stem_lst = self.dct_wgrp[k_wgrp]['語幹']
-            w_schg = self.dct_wgrp[k_wgrp]['語変']
-            w_endp = self.dct_wgrp[k_wgrp]['変化']
+        for k_wgrp in self.dct_wgrp1:
+            w_stem_lst = self.dct_wgrp1[k_wgrp]['語幹']
+            w_schg = self.dct_wgrp1[k_wgrp]['語変']
+            w_endp = self.dct_wgrp1[k_wgrp]['変化']
             
             # 語幹が変わる場合
-            if '変語幹' in self.dct_wgrp[k_wgrp]:
+            if '変語幹' in self.dct_wgrp1[k_wgrp]:
                 w_chg_stem = True
             else:
                 w_chg_stem = False
@@ -536,9 +559,12 @@ class CnvTone():
                     
                     # 語幹が変わる場合
                     if w_chg_stem:
-                        self.dct_cnv[w_stem + w_schg + polite_end] = assert_end
+                        w_polite_end = w_stem + w_schg + polite_end 
+                        w_assert_end = assert_end
                     else:
-                        self.dct_cnv[w_stem + w_schg + polite_end] = w_stem + assert_end
+                        w_polite_end = w_stem + w_schg + polite_end
+                        w_assert_end = w_stem + assert_end
+                    self.dct_cnv[w_polite_end] = w_assert_end
                     
         # register the leaked polite tone that should be interpreted at the very end
         # [一番最後になって解釈すべき漏れた敬語表現を登録する]
@@ -553,6 +579,110 @@ class CnvTone():
             if self.debug:
                 print(k + ' : ' + self.dct_cnv[k])
             
+        return(True)
+    
+    def cnvCoditional(self):
+        """
+            # convert a pattern following a specific letter into an assertion word
+            # [特定の一字に続くパターンを断定語に変換する]
+        """
+        
+        for k_wgrp in self.dct_wgrp2:
+            w_stem_lst = self.dct_wgrp2[k_wgrp]['語幹']
+            w_schg = self.dct_wgrp2[k_wgrp]['語変']
+            w_endp = self.dct_wgrp2[k_wgrp]['変化']
+            
+            if not self.dct_wgrp2[k_wgrp]['漢字']:
+                print('not specifid -{}'.format('漢字'))
+                return(False)
+            w_endp2 = self.dct_wgrp2[k_wgrp]['漢字']['変化']
+            if not w_endp2 in self.dct_wchg:
+                print('not specifid -{}'.format(w_endp2))
+                return (False)
+            
+            # 語幹が変わる場合
+            if '変語幹' in self.dct_wgrp2[k_wgrp]:
+                w_chg_stem = True
+            else:
+                w_chg_stem = False
+            
+            # extract the stem from the list
+            # [リストより語幹を取り出す]
+            for w_stem in w_stem_lst:
+                    
+                # extract polite change dict
+                # [丁寧語尾変化dictを取り出す]
+                
+                # polite to assertive
+                if not w_endp in self.dct_wchg:
+                    print('not specifid -{}'.format(w_endp))
+                    return(False)
+                else:
+                    endp_dct = self.dct_wchg[w_endp]
+                
+                # polite to assertive
+                if not w_endp2 in self.dct_wchg:
+                    print('not specifid -{}'.format(w_endp2))
+                    return(False)
+                else:
+                    endp_dct2 = self.dct_wchg[w_endp2]
+                
+                # take polite endings in order
+                # [丁寧語尾を順に取り出す]
+                for polite_end in endp_dct:
+                    
+                    # extract the corresponding asserted endings
+                    # [丁寧語尾に対応する断定語尾を取り出す]
+                    assert_end = endp_dct[polite_end]
+                    
+                    # add to conversion dict
+                    # [変換dictに加える]
+                    # '語幹' + '語変' + '丁寧語尾' : '語幹'+'断定語尾'
+                    
+                    # 語幹が変わる場合
+                    if w_chg_stem:
+                        w_polite_end = w_stem + w_schg + polite_end
+                    else:
+                        w_polite_end = w_stem + w_schg + polite_end
+                    
+                    # pattern of particle following one word of kanji
+                    # [一語の漢字に続く助詞のパターン]
+                    w_pattern = re.compile('([\u4E00-\u9FD0])' + '(' + w_polite_end + ')')
+                    m_list = re.findall(w_pattern, self.clip_str)
+                    if (m_list):
+                        for m_item in m_list:
+                            (kanji, particle) = m_item
+                            polite_word = kanji + particle
+                            
+                            # register the target polite word in dict
+                            # [対象の丁寧語をdictに登録する]
+                            self.dct_cnv2[polite_word] = kanji + endp_dct2[polite_end]
+                    
+            # convert polite tone to assertive one
+            # [丁寧語（「です・ます」調）を断定語（「だ・である」調）に変換]
+            for k in self.dct_cnv2:
+                self.clip_str = self.clip_str.replace(k, self.dct_cnv2[k])
+            
+                if self.debug:
+                    print(k + ' : ' + self.dct_cnv2[k])
+                    
+                        
+        return(True)
+    
+    def cnvTone(self):
+        """
+            convert polite tone to assertive one
+            [丁寧語（「です・ます」調）を断定語（「だ・である」調）に変換]
+        """
+        
+        # forcibly convert tones with a certain vocabulary pattern
+        if not self.cnvForced():
+            return(False)
+        
+        # 
+        if not self.cnvCoditional():
+            return(False)
+        
         # past result of the tone conversion to clip board
         self.clip_board.set(self.clip_str)
         
